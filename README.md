@@ -1,6 +1,6 @@
-# QA Dojo — Playwright Tests
+# QA Dojo - API tests using PW + TS - group 9
 
-Small Playwright test suite for the QA Dojo exercises.
+This is a project for practicing skill in api testing using Playwright and TypeScript. This is 9 group.
 
 ## Contents
 
