@@ -5,11 +5,8 @@ import { test, expect, APIRequestContext } from "@playwright/test";
 
 /* - Questions
 ? #1 не прийняло повний base URL: https://api.escuelajs.co/api/v1
-? #2 як працює цей код?   const json = await response.json();
-? console.log(`Product is successfully created with ID: ${json.id}`); - чому console.log працює пізніше вейта?
 ? #3 : Promise<Object> як тип функції. Як вірно вказати тип, якщо вона повертає json?
 ? #4 якщо попередні степи тесту впали, то не відбувається видалення доданого продукту. Як зробити щоб відбувалося?
-? #5 останній тест assert "бачить" не проапдейчений продукт, хоча через постмен бачу що він проапдейтився.
 */
 
 // set a new type for payload Product
