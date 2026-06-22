@@ -57,11 +57,8 @@ const newProduct: ProductData = {
 async function createProduct(request: APIRequestContext, newProduct: ProductData): Promise<ProductResponse> {
   const response = await request.post("/api/v1/products/", {
     data: newProduct,
+    failOnStatusCode: true,
   });
-
-  if (!response.ok()) {
-    throw new Error(`Can't create a new product. Status is: ${response.status()}`);
-  }
 
   const json = await response.json();
   return json;
@@ -71,11 +68,7 @@ async function createProduct(request: APIRequestContext, newProduct: ProductData
 async function readProduct(request: APIRequestContext, productId?: Number) {
   // product id can be empty, so let's prepare url
   const url = productId ? `/api/v1/products/${productId}` : "/api/v1/products/";
-  const response = await request.get(url, {});
-
-  if (!response.ok()) {
-    throw new Error(`Can't get product(s). Status is: ${response.status()}`);
-  }
+  const response = await request.get(url, { failOnStatusCode: true });
 
   return response;
 }
@@ -84,24 +77,16 @@ async function readProduct(request: APIRequestContext, productId?: Number) {
 async function updateProduct(request: APIRequestContext, updProduct: ProductData, productId: Number) {
   const response = await request.put(`/api/v1/products/${productId}`, {
     data: updProduct,
+    failOnStatusCode: true,
   });
 
-  if (!response.ok()) {
-    throw new Error(`Can't update a product. Status is: ${response.status()}`);
-  }
-
   const json = await response.json();
-
   return json;
 }
 
 // delete a product (DELETE)
 async function deleteProduct(request: APIRequestContext, productId: Number) {
-  const response = await request.delete(`/api/v1/products/${productId}`, {});
-
-  if (!response.ok()) {
-    throw new Error(`Can't delete the product. Status is: ${response.status()}`);
-  }
+  const response = await request.delete(`/api/v1/products/${productId}`, { failOnStatusCode: true });
 
   return response;
 }
@@ -131,13 +116,6 @@ test("created product should be present and have proper fields && values", async
     description: newProduct.description,
     images: newProduct.images,
   });
-
-  // ? як краще, так чи як вище?
-  expect(getProdResponseJson).toHaveProperty("title", newProduct.title);
-  expect(getProdResponseJson).toHaveProperty("price", newProduct.price);
-  expect(getProdResponseJson).toHaveProperty("description", newProduct.description);
-  expect(getProdResponseJson).toHaveProperty("images", newProduct.images);
-  expect(getProdResponseJson).toHaveProperty("category.id", newProduct.categoryId);
 
   // Data teardown
   const delResponse = await deleteProduct(request, productId);
@@ -184,19 +162,13 @@ test("updated product is present in the list with updated data", async ({ reques
 
   //! Act
   await updateProduct(request, updatedProduct, productId);
-  const getProdResponse = await readProduct(request, productId);
-  const getProdResponseJson = await getProdResponse.json();
 
   //! Assert
+  const getProdResponse = await readProduct(request, productId);
+  const getProdResponseJson = await getProdResponse.json();
   expect(getProdResponse.status()).toBe(200);
   expect(getProdResponse.statusText()).toBe("OK");
-  expect(getProdResponseJson).toMatchObject({
-    id: productId,
-    title: newProduct.title,
-    price: newProduct.price,
-    description: newProduct.description,
-    images: newProduct.images,
-  });
+  expect(getProdResponseJson).toMatchObject(updatedProduct);
 
   // Data teardown
   const delResponse = await deleteProduct(request, productId);
