@@ -111,7 +111,6 @@ async function deleteProduct(request: APIRequestContext, productId: Number) {
 // create a product (happy path) and schema validation
 test("created product should be present and have proper fields && values", async ({ request }) => {
   //! ARRANGE
-
   //create a new product
   const jsonCreated = await createProduct(request, newProduct);
   // store some variables from created product
@@ -172,7 +171,6 @@ test("created product is present in the products list", async ({ request }) => {
 
 test("updated product is present in the list with updated data", async ({ request }) => {
   //! Arrange
-
   const updatedProduct: ProductData = {
     title: `<UPDATED> Hogwarts castle LEGO #${randomNumber}`,
     price: 20,
@@ -183,6 +181,7 @@ test("updated product is present in the list with updated data", async ({ reques
 
   const jsonCreated = await createProduct(request, newProduct);
   const productId = jsonCreated.id;
+
   //! Act
   await updateProduct(request, updatedProduct, productId);
   const getProdResponse = await readProduct(request, productId);
