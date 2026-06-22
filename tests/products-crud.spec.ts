@@ -77,7 +77,6 @@ async function readProduct(request: APIRequestContext, productId?: Number) {
     throw new Error(`Can't get product(s). Status is: ${response.status()}`);
   }
 
-  //const json = await response.json();
   return response;
 }
 
@@ -134,7 +133,7 @@ test("created product should be present and have proper fields && values", async
     images: newProduct.images,
   });
 
-  // ? як краще, так чи так як вище?
+  // ? як краще, так чи як вище?
   expect(getProdResponseJson).toHaveProperty("title", newProduct.title);
   expect(getProdResponseJson).toHaveProperty("price", newProduct.price);
   expect(getProdResponseJson).toHaveProperty("description", newProduct.description);
