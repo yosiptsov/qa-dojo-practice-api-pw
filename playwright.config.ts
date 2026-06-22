@@ -36,9 +36,9 @@ export default defineConfig({
   projects: [
     {
       name: "fakeapi-platzi",
+      testDir: "./fakeapi-platzi/tests",
       use: {
         baseURL: "https://api.escuelajs.co/api/v1",
-        // Це гарантує, що Playwright не буде ініціалізувати зайві UI-ресурси
         extraHTTPHeaders: {
           Accept: "application/json",
           "Content-Type": "application/json",
