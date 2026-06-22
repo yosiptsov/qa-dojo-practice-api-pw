@@ -168,7 +168,13 @@ test("updated product is present in the list with updated data", async ({ reques
   const getProdResponseJson = await getProdResponse.json();
   expect(getProdResponse.status()).toBe(200);
   expect(getProdResponse.statusText()).toBe("OK");
-  expect(getProdResponseJson).toMatchObject(updatedProduct);
+  expect(getProdResponseJson).toMatchObject({
+    id: productId,
+    title: updatedProduct.title,
+    price: updatedProduct.price,
+    description: updatedProduct.description,
+    images: updatedProduct.images,
+  });
 
   // Data teardown
   const delResponse = await deleteProduct(request, productId);
