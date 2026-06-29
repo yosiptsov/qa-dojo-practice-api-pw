@@ -65,6 +65,7 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
       expect.soft(headers["content-type"]).toContain("application/json");
       expect.soft(headers["cross-origin-opener-policy"]).toBe("same-origin");
       expect.soft(headers["cross-origin-resource-policy"]).toBe("same-origin");
+      expect.soft(headers["content-security-policy"]).toContain("base-uri");
     });
 
     await test.step("Verify response values match input product values", () => {
@@ -87,6 +88,14 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
 
     const foundProd = await test.step("find product in the list", () => {
       return getProdResponseJson.find((prod: ProductResponse) => prod.id === productId);
+    });
+
+    await test.step("Verify response headers", () => {
+      const headers = getProdResponse.headers();
+      expect.soft(headers["content-type"]).toContain("application/json");
+      expect.soft(headers["cross-origin-opener-policy"]).toBe("same-origin");
+      expect.soft(headers["cross-origin-resource-policy"]).toBe("same-origin");
+      expect.soft(headers["content-security-policy"]).toContain("base-uri");
     });
 
     await test.step("Verify created product matches the product in the list", async () => {
