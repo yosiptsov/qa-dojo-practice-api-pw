@@ -1,9 +1,8 @@
 import { test, expect, APIRequestContext } from "@playwright/test";
-import * as ProductsCrud from "../app/utils/products-crud";
-import { ProductData, ProductResponse } from "../app/types/products";
-import { TAG } from "./tags";
-
-import * as ProductsSearch from "../app/utils/products-search";
+import * as ProductsCrud from "../../app/utils/products-crud";
+import * as ProductsSearch from "../../app/utils/products-search";
+import { ProductData, ProductResponse } from "../../app/types/products";
+import { TAG } from "../tags";
 
 // prepare a random test data
 const randomNumber = Math.floor(Math.random() * 10000);
