@@ -22,8 +22,10 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
   test.beforeAll(async ({ request }) => {
     // check if there are test products from previous runs and delete them
     const findOldTestProducts = await ProductsSearch.findProductsBySubString(request, "Hogwarts castle LEGO");
-    if (findOldTestProducts.length > 0) await ProductsCrud.deleteAllProducts(request, findOldTestProducts);
-    console.log("The following old test data products have been deleted: ", findOldTestProducts);
+    if (findOldTestProducts.length > 0) {
+      await ProductsCrud.deleteAllProducts(request, findOldTestProducts);
+      console.log("The following old test data products have been deleted: ", findOldTestProducts);
+    }
   });
 
   test.beforeEach(async ({ request }) => {
@@ -37,39 +39,60 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     expect(delResponse.status(), `Product id = ${productId} was not deleted!`).toBe(200);
   });
 
-  test("be present and have proper fields && values", async ({ request }) => {
-    //! ACT
-    // check if the created product can be read with GET request
-    const getProdResponse = await ProductsCrud.readProduct(request, productId);
-    const getProdResponseJson = await getProdResponse.json();
+  test("be present and have proper fields && values - |test id: L12:t1|", async ({ request }) => {
+    const { getProdResponse, getProdResponseJson } = await test.step("Read created product with get", async () => {
+      const getProdResponse = await ProductsCrud.readProduct(request, productId);
+      const getProdResponseJson = await getProdResponse.json();
+      return { getProdResponse, getProdResponseJson };
+    });
 
-    expect(getProdResponse.status()).toBe(200);
-    expect(getProdResponse.statusText()).toBe("OK");
-    expect(getProdResponseJson).toMatchObject({
-      id: productId,
-      title: newProduct.title,
-      price: newProduct.price,
-      description: newProduct.description,
-      images: newProduct.images,
+    await test.step("Verify response status", async () => {
+      expect(getProdResponse.status()).toBe(200);
+      expect(getProdResponse.statusText()).toBe("OK");
+    });
+
+    await test.step("Verify response headers", () => {
+      const headers = getProdResponse.headers();
+      expect(headers["content-type"]).toContain("application/json");
+      expect(headers["cross-origin-opener-policy"]).toBe("same-origin");
+      expect(headers["cross-origin-resource-policy"]).toBe("same-origin");
+    });
+
+    await test.step("Verify response values match input product values", () => {
+      expect(getProdResponseJson).toMatchObject({
+        id: productId,
+        title: newProduct.title,
+        price: newProduct.price,
+        description: newProduct.description,
+        images: newProduct.images,
+      });
     });
   });
 
-  test("be present in the products list", async ({ request }) => {
-    const getProdResponse = await ProductsCrud.readProduct(request);
-    const getProdResponseJson = await getProdResponse.json();
+  test("be present in the products list - |test id: L12:t2|", async ({ request }) => {
+    const { getProdResponse, getProdResponseJson } = await test.step("Read created product with get", async () => {
+      const getProdResponse = await ProductsCrud.readProduct(request);
+      const getProdResponseJson = await getProdResponse.json();
+      return { getProdResponse, getProdResponseJson };
+    });
 
-    const foundProd = getProdResponseJson.find((prod: ProductResponse) => prod.id === productId);
-    expect(foundProd, `Product ${productId} was not found in the response`).toBeDefined();
-    expect(foundProd).toMatchObject({
-      id: productId,
-      title: newProduct.title,
-      price: newProduct.price,
-      description: newProduct.description,
-      images: newProduct.images,
+    const foundProd = await test.step("find product in the list", () => {
+      return getProdResponseJson.find((prod: ProductResponse) => prod.id === productId);
+    });
+
+    await test.step("Verify created product matches the product in the list", async () => {
+      expect(foundProd, `Product ${productId} was not found in the response`).toBeDefined();
+      expect(foundProd).toMatchObject({
+        id: productId,
+        title: newProduct.title,
+        price: newProduct.price,
+        description: newProduct.description,
+        images: newProduct.images,
+      });
     });
   });
 
-  test("updated product is present in the list with updated data", async ({ request }) => {
+  test("updated product is present in the list with updated data - |test id: L12:t3|", async ({ request }) => {
     const updatedProduct: ProductData = {
       title: `<UPDATED> Hogwarts castle LEGO #${randomNumber}`,
       price: 20,

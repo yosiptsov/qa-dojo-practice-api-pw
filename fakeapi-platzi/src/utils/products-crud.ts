@@ -34,14 +34,12 @@ export async function updateProduct(request: APIRequestContext, updProduct: Prod
 // delete a product (DELETE)
 export async function deleteProduct(request: APIRequestContext, productId: Number) {
   const response = await request.delete(`/api/v1/products/${productId}`, { failOnStatusCode: true });
-
   return response;
 }
 
 // delete all products from an array (DELETE)
 export async function deleteAllProducts(request: APIRequestContext, productIds: string[]): Promise<void> {
   for (const productId of productIds) {
-    const response = await request.delete(`/api/v1/products/${productId}`, { failOnStatusCode: true });
-    expect(response.status()).toBe(200);
+    await request.delete(`/api/v1/products/${productId}`, { failOnStatusCode: true });
   }
 }
