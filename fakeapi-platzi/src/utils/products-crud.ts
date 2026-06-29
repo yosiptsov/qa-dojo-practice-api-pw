@@ -37,7 +37,7 @@ export async function deleteProduct(request: APIRequestContext, productId: Numbe
   return response;
 }
 
-// delete all products from an array (DELETE)
+// delete all products by an array (DELETE)
 export async function deleteAllProducts(request: APIRequestContext, productIds: string[]): Promise<void> {
   for (const productId of productIds) {
     await request.delete(`/api/v1/products/${productId}`, { failOnStatusCode: true });

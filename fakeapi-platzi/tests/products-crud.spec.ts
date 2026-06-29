@@ -39,15 +39,6 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     expect(delResponse.status(), `Product id = ${productId} was not deleted!`).toBe(200);
   });
 
-  test.afterAll(async ({ request }) => {
-    // check if there are test products from previous runs and delete them
-    const findOldTestProducts = await ProductsSearch.findProductsBySubString(request, "Hogwarts castle LEGO");
-    if (findOldTestProducts.length > 0) {
-      await ProductsCrud.deleteAllProducts(request, findOldTestProducts);
-      console.log("The following old test data products have been deleted: ", findOldTestProducts);
-    }
-  });
-
   test("be present and have proper fields && values - |test id: L12:t1|", async ({ request }) => {
     const { getProdResponse, getProdResponseJson } = await test.step("Read created product with get", async () => {
       const getProdResponse = await ProductsCrud.readProduct(request, productId);
@@ -110,7 +101,7 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     });
   });
 
-  test("present in the list with updated data - |test id: L12:t3|", async ({ request }) => {
+  test("be present in the list with updated data - |test id: L12:t3|", async ({ request }) => {
     const updatedProduct: ProductData = {
       title: `<UPDATED> Hogwarts castle LEGO #${randomNumber}`,
       price: 20,
