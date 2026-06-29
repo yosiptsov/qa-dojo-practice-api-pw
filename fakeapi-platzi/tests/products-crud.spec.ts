@@ -1,7 +1,9 @@
 import { test, expect, APIRequestContext } from "@playwright/test";
-import * as productsCrud from "../src/utils/products-crud";
+import * as ProductsCrud from "../src/utils/products-crud";
 import { ProductData, ProductResponse } from "../src/types/products";
 import { TAG } from "./tags";
+
+import * as ProductsSearch from "../src/utils/products-search";
 
 // prepare a random test data
 const randomNumber = Math.floor(Math.random() * 10000);
@@ -19,27 +21,30 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
   let productId: number;
 
   test.beforeAll(async ({ request }) => {
-    // make sure there are no test data from previous runs
+    const findOldTestProducts = await ProductsSearch.findProductsBySubString(request, "Hogwarts castle LEGO");
+
+    if (findOldTestProducts.length > 0) await ProductsCrud.deleteAllProducts(request, findOldTestProducts);
+    console.log("Наступні продукти були видалені: ", findOldTestProducts);
   });
 
   test.beforeEach(async ({ request }) => {
     //! Arrange
     //create a new product
-    const jsonCreated = await productsCrud.createProduct(request, newProduct);
+    const jsonCreated = await ProductsCrud.createProduct(request, newProduct);
     // store some variables from created product
     productId = jsonCreated.id;
   });
 
   test.afterEach(async ({ request }) => {
     // Data teardown
-    const delResponse = await productsCrud.deleteProduct(request, productId);
+    const delResponse = await ProductsCrud.deleteProduct(request, productId);
     expect(delResponse.status(), `Product id = ${productId} was not deleted!`).toBe(200);
   });
 
   test("be present and have proper fields && values", async ({ request }) => {
     //! ACT
     // check if the created product can be read with GET request
-    const getProdResponse = await productsCrud.readProduct(request, productId);
+    const getProdResponse = await ProductsCrud.readProduct(request, productId);
     const getProdResponseJson = await getProdResponse.json();
 
     // !ASSERT
@@ -56,7 +61,7 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
 
   test("be present in the products list", async ({ request }) => {
     //! Act
-    const getProdResponse = await productsCrud.readProduct(request);
+    const getProdResponse = await ProductsCrud.readProduct(request);
     const getProdResponseJson = await getProdResponse.json();
 
     //! Assert
@@ -82,10 +87,10 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     };
 
     //! Act
-    await productsCrud.updateProduct(request, updatedProduct, productId);
+    await ProductsCrud.updateProduct(request, updatedProduct, productId);
 
     //! Assert
-    const getProdResponse = await productsCrud.readProduct(request, productId);
+    const getProdResponse = await ProductsCrud.readProduct(request, productId);
     const getProdResponseJson = await getProdResponse.json();
     expect(getProdResponse.status()).toBe(200);
     expect(getProdResponse.statusText()).toBe("OK");

@@ -1,5 +1,6 @@
 // set a new type for payload Product
 export type ProductData = {
+  id?: string;
   title: string;
   price: number;
   description: string;
