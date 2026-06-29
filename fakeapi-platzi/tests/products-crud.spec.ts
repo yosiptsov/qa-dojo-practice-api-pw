@@ -1,43 +1,6 @@
 import { test, expect, APIRequestContext } from "@playwright/test";
-
-//* TEST DATA AND HELPER FUNCTIONS
-// TODO: move helper functions to a Page object class.
-
-/* - Questions
-? #1 не прийняло повний base URL: https://api.escuelajs.co/api/v1
-? #3 : Promise<Object> як тип функції. Як вірно вказати тип, якщо вона повертає json?
-? #4 якщо попередні степи тесту впали, то не відбувається видалення доданого продукту. Як зробити щоб відбувалося?
-*/
-
-// set a new type for payload Product
-type ProductData = {
-  title: string;
-  price: number;
-  description: string;
-  categoryId: number;
-  images: string[];
-};
-
-// set a new type for response Product and included obj category
-type Category = {
-  id: number;
-  name: string;
-  image: string;
-  creationAt: string;
-  updatedAt: string;
-};
-
-type ProductResponse = {
-  id: number;
-  title: string;
-  slug: string;
-  price: number;
-  description: string;
-  category: Category;
-  images: string[];
-  creationAt: string;
-  updatedAt: string;
-};
+import * as productsCrud from "../src/utils/products-crud";
+import { ProductData, ProductResponse } from "../src/types/products";
 
 // prepare a random test data
 const randomNumber = Math.floor(Math.random() * 10000);
@@ -50,57 +13,18 @@ const newProduct: ProductData = {
   images: ["https://placehold.co/600x400"],
 };
 
-// create a new product POST
-async function createProduct(request: APIRequestContext, newProduct: ProductData): Promise<ProductResponse> {
-  const response = await request.post("/api/v1/products/", {
-    data: newProduct,
-    failOnStatusCode: true,
-  });
-
-  const json = await response.json();
-  return json;
-}
-
-// read product / products GET
-async function readProduct(request: APIRequestContext, productId?: Number) {
-  // product id can be empty, so let's prepare url
-  const url = productId ? `/api/v1/products/${productId}` : "/api/v1/products/";
-  const response = await request.get(url, { failOnStatusCode: true });
-
-  return response;
-}
-
-// update a product (PUT)
-async function updateProduct(request: APIRequestContext, updProduct: ProductData, productId: Number) {
-  const response = await request.put(`/api/v1/products/${productId}`, {
-    data: updProduct,
-    failOnStatusCode: true,
-  });
-
-  const json = await response.json();
-  return json;
-}
-
-// delete a product (DELETE)
-async function deleteProduct(request: APIRequestContext, productId: Number) {
-  const response = await request.delete(`/api/v1/products/${productId}`, { failOnStatusCode: true });
-
-  return response;
-}
-
 //* TESTS STARTS HERE
-
 // create a product (happy path) and schema validation
 test("created product should be present and have proper fields && values", async ({ request }) => {
   //! ARRANGE
   //create a new product
-  const jsonCreated = await createProduct(request, newProduct);
+  const jsonCreated = await productsCrud.createProduct(request, newProduct);
   // store some variables from created product
   const productId = jsonCreated.id;
 
   //! ACT
   // check if the created product can be read with GET request
-  const getProdResponse = await readProduct(request, productId);
+  const getProdResponse = await productsCrud.readProduct(request, productId);
   const getProdResponseJson = await getProdResponse.json();
 
   // !ASSERT
@@ -115,17 +39,17 @@ test("created product should be present and have proper fields && values", async
   });
 
   // Data teardown
-  const delResponse = await deleteProduct(request, productId);
+  const delResponse = await productsCrud.deleteProduct(request, productId);
   expect(delResponse.status(), `Product id = ${productId} was not deleted!`).toBe(200);
 });
 
 test("created product is present in the products list", async ({ request }) => {
   //! Arrange
-  const jsonCreated = await createProduct(request, newProduct);
+  const jsonCreated = await productsCrud.createProduct(request, newProduct);
   const productId = jsonCreated.id;
 
   //! Act
-  const getProdResponse = await readProduct(request);
+  const getProdResponse = await productsCrud.readProduct(request);
   const getProdResponseJson = await getProdResponse.json();
 
   //! Assert
@@ -140,7 +64,7 @@ test("created product is present in the products list", async ({ request }) => {
   });
 
   // Data teardown
-  const delResponse = await deleteProduct(request, productId);
+  const delResponse = await productsCrud.deleteProduct(request, productId);
   expect(delResponse.status(), `Product id = ${productId} was not deleted!`).toBe(200);
 });
 
@@ -154,14 +78,14 @@ test("updated product is present in the list with updated data", async ({ reques
     images: ["https://updated.placehold.co/600x400"],
   };
 
-  const jsonCreated = await createProduct(request, newProduct);
+  const jsonCreated = await productsCrud.createProduct(request, newProduct);
   const productId = jsonCreated.id;
 
   //! Act
-  await updateProduct(request, updatedProduct, productId);
+  await productsCrud.updateProduct(request, updatedProduct, productId);
 
   //! Assert
-  const getProdResponse = await readProduct(request, productId);
+  const getProdResponse = await productsCrud.readProduct(request, productId);
   const getProdResponseJson = await getProdResponse.json();
   expect(getProdResponse.status()).toBe(200);
   expect(getProdResponse.statusText()).toBe("OK");
@@ -174,6 +98,6 @@ test("updated product is present in the list with updated data", async ({ reques
   });
 
   // Data teardown
-  const delResponse = await deleteProduct(request, productId);
+  const delResponse = await productsCrud.deleteProduct(request, productId);
   expect(delResponse.status(), `Product id = ${productId} was not deleted!`).toBe(200);
 });
