@@ -17,21 +17,17 @@ const newProduct: ProductData = {
 };
 
 test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.positive] }, () => {
-  // common variables
   let productId: number;
 
   test.beforeAll(async ({ request }) => {
+    // check if there are test products from previous runs and delete them
     const findOldTestProducts = await ProductsSearch.findProductsBySubString(request, "Hogwarts castle LEGO");
-
     if (findOldTestProducts.length > 0) await ProductsCrud.deleteAllProducts(request, findOldTestProducts);
-    console.log("Наступні продукти були видалені: ", findOldTestProducts);
+    console.log("The following old test data products have been deleted: ", findOldTestProducts);
   });
 
   test.beforeEach(async ({ request }) => {
-    //! Arrange
-    //create a new product
     const jsonCreated = await ProductsCrud.createProduct(request, newProduct);
-    // store some variables from created product
     productId = jsonCreated.id;
   });
 
@@ -47,7 +43,6 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     const getProdResponse = await ProductsCrud.readProduct(request, productId);
     const getProdResponseJson = await getProdResponse.json();
 
-    // !ASSERT
     expect(getProdResponse.status()).toBe(200);
     expect(getProdResponse.statusText()).toBe("OK");
     expect(getProdResponseJson).toMatchObject({
@@ -60,11 +55,9 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
   });
 
   test("be present in the products list", async ({ request }) => {
-    //! Act
     const getProdResponse = await ProductsCrud.readProduct(request);
     const getProdResponseJson = await getProdResponse.json();
 
-    //! Assert
     const foundProd = getProdResponseJson.find((prod: ProductResponse) => prod.id === productId);
     expect(foundProd, `Product ${productId} was not found in the response`).toBeDefined();
     expect(foundProd).toMatchObject({
@@ -77,7 +70,6 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
   });
 
   test("updated product is present in the list with updated data", async ({ request }) => {
-    //! Arrange
     const updatedProduct: ProductData = {
       title: `<UPDATED> Hogwarts castle LEGO #${randomNumber}`,
       price: 20,
@@ -86,10 +78,8 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
       images: ["https://updated.placehold.co/600x400"],
     };
 
-    //! Act
     await ProductsCrud.updateProduct(request, updatedProduct, productId);
 
-    //! Assert
     const getProdResponse = await ProductsCrud.readProduct(request, productId);
     const getProdResponseJson = await getProdResponse.json();
     expect(getProdResponse.status()).toBe(200);

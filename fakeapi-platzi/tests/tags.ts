@@ -4,4 +4,5 @@ export enum TAG {
   smoke = "@smoke",
   negative = "@negative",
   positive = "@positive",
+  annotations = "@annotations",
 }
