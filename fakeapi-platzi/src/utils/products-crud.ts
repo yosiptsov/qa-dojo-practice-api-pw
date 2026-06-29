@@ -28,8 +28,7 @@ export async function updateProduct(request: APIRequestContext, updProduct: Prod
     failOnStatusCode: true,
   });
 
-  const json = await response.json();
-  return json;
+  return response;
 }
 
 // delete a product (DELETE)
