@@ -92,7 +92,7 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     });
   });
 
-  test("updated product is present in the list with updated data - |test id: L12:t3|", async ({ request }) => {
+  test("present in the list with updated data - |test id: L12:t3|", async ({ request }) => {
     const updatedProduct: ProductData = {
       title: `<UPDATED> Hogwarts castle LEGO #${randomNumber}`,
       price: 20,
