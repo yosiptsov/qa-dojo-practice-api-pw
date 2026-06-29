@@ -62,13 +62,13 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
 
     await test.step("Verify response headers", () => {
       const headers = getProdResponse.headers();
-      expect(headers["content-type"]).toContain("application/json");
-      expect(headers["cross-origin-opener-policy"]).toBe("same-origin");
-      expect(headers["cross-origin-resource-policy"]).toBe("same-origin");
+      expect.soft(headers["content-type"]).toContain("application/json");
+      expect.soft(headers["cross-origin-opener-policy"]).toBe("same-origin");
+      expect.soft(headers["cross-origin-resource-policy"]).toBe("same-origin");
     });
 
     await test.step("Verify response values match input product values", () => {
-      expect(getProdResponseJson).toMatchObject({
+      expect.soft(getProdResponseJson).toMatchObject({
         id: productId,
         title: newProduct.title,
         price: newProduct.price,
