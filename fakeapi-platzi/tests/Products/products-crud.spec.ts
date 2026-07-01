@@ -19,7 +19,7 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
   let productId: number;
 
   test.beforeAll(async ({ request }) => {
-    // check if there are test products from previous runs and delete them
+    // check if test products from previous runs exist and delete them
     const findOldTestProducts = await ProductsSearch.findProductsBySubString(request, "Hogwarts castle LEGO");
     if (findOldTestProducts.length > 0) {
       await ProductsCrud.deleteAllProducts(request, findOldTestProducts);
