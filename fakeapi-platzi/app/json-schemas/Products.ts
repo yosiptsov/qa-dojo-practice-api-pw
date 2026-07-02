@@ -10,8 +10,8 @@ export const Products = z.object({
     .regex(/^[a-z0-9-]+$/, "Invalid slug format"),
   price: z.number().positive("Price must be greater than 0"),
   description: z.string().min(5, "Description should be more descriptive"),
-  images: z.array(z.httpUrl("Invalid product image URL")).min(1, "At least one image is required"),
   category: Category,
+  images: z.array(z.httpUrl("Invalid product image URL")).min(1, "At least one image is required"),
   creationAt: z.iso.datetime({ local: true }),
   updatedAt: z.iso.datetime({ local: true }),
 });
