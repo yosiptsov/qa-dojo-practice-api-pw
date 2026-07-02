@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { TAG } from "../app/tags/tags";
+import { TAG } from "../../app/tags/tags";
 
 test.describe("Fake tests to see how test annotations work", { tag: TAG.annotations }, () => {
   test.skip("|test id: L12:t0| - This test should be skipped", async ({}) => {
