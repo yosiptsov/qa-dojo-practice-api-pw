@@ -59,7 +59,7 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     });
 
     await test.step("Verify response values match input product values", () => {
-      expect.soft(getProdResponseJson).toMatchObject({
+      expect(getProdResponseJson).toMatchObject({
         id: productId,
         title: newProduct.title,
         price: newProduct.price,
