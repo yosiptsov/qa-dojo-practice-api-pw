@@ -3,14 +3,17 @@ import * as ProductsCrud from "../../app/utils/products-crud";
 import * as ProductsSearch from "../../app/utils/products-search";
 import { ProductData, ProductResponse } from "../../app/types/products";
 import { TAG } from "../../app/tags/tags";
+import { faker } from "@faker-js/faker";
 
 // prepare a random test data
-const randomNumber = Math.floor(Math.random() * 10000);
+const productNumber = faker.number.float({ min: 1, max: 100, fractionDigits: 5 });
+const productMaterial = faker.commerce.productMaterial();
+const productNumDetails = faker.number.int({ min: 450, max: 10_000 });
 
 const newProduct: ProductData = {
-  title: `Hogwarts castle LEGO #${randomNumber}`,
+  title: `Hogwarts castle LEGO #${productNumber}`,
   price: 10,
-  description: `A description for Hogwarts castle LEGO #${randomNumber}`,
+  description: `Hogwarts castle LEGO #${productNumber}. This set has ${productNumDetails} parts. It is made from safe material: ${productMaterial}`,
   categoryId: 1,
   images: ["https://placehold.co/600x400"],
 };
@@ -102,9 +105,9 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
 
   test("be present in the list with updated data - |test id: L12:t3|", async ({ request }) => {
     const updatedProduct: ProductData = {
-      title: `<UPDATED> Hogwarts castle LEGO #${randomNumber}`,
+      title: `<UPDATED> Hogwarts castle LEGO #${productNumber}`,
       price: 20,
-      description: `<UPDATED> A description for Hogwarts castle LEGO #${randomNumber}`,
+      description: `<UPDATED> A description for Hogwarts castle LEGO #${productNumber}`,
       categoryId: 2,
       images: ["https://updated.placehold.co/600x400"],
     };
