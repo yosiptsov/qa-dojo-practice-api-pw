@@ -1,4 +1,4 @@
-import { test, expect, APIRequestContext } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import * as ProductsCrud from "../../app/utils/products-crud";
 import * as ProductsSearch from "../../app/utils/products-search";
 import { ProductData, ProductResponse } from "../../app/types/products";

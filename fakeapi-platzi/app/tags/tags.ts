@@ -5,4 +5,5 @@ export enum TAG {
   negative = "@negative",
   positive = "@positive",
   annotations = "@annotations",
+  schemaValidation = "@schemaValidation",
 }
