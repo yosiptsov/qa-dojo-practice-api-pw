@@ -8,7 +8,7 @@ import {
   deleteAllProducts,
 } from "../../app/utils/products-crud";
 import * as ProductsSearch from "../../app/utils/products-search";
-import { ProductData, ProductResponse } from "../../app/types/products";
+import { ProductResponse } from "../../app/types/products";
 import { TAG } from "../../app/tags/tags";
 
 test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.positive] }, () => {
