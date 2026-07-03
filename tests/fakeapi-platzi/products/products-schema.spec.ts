@@ -1,10 +1,14 @@
 import { test } from "./fixtures";
 import { expect } from "@playwright/test";
-import { createProduct, readProduct, deleteProduct } from "../../app/utils/products-crud";
-import { TAG } from "../../app/tags/tags";
-import { ProductResponse } from "../../app/types/products";
+import {
+  createProduct,
+  readProduct,
+  deleteProduct,
+} from "../../../app/fakeapi-platzi/utils/products-crud";
+import { TAG } from "../../../app/fakeapi-platzi/tags/tags";
+import { ProductResponse } from "../../../app/fakeapi-platzi/types/products";
 import { z } from "zod";
-import { Products } from "../../app/json-schemas/Products";
+import { Products } from "../../../app/fakeapi-platzi/json-schemas/Products";
 
 // ? 1. Великі маленькі букви в назвах файлів.
 

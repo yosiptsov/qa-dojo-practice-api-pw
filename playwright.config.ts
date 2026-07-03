@@ -36,7 +36,7 @@ export default defineConfig({
   projects: [
     {
       name: "fakeapi-platzi",
-      testDir: "./fakeapi-platzi/tests",
+      testDir: "./tests/fakeapi-platzi",
       use: {
         baseURL: "https://api.escuelajs.co/api/v1",
         extraHTTPHeaders: {

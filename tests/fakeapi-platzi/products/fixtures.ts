@@ -1,5 +1,5 @@
 import { test as base, expect } from "@playwright/test";
-import { ProductData } from "../../app/types/products";
+import { ProductData } from "../../../app/fakeapi-platzi/types/products";
 import { faker } from "@faker-js/faker";
 
 type MyFixtures = {

@@ -6,10 +6,10 @@ import {
   updateProduct,
   deleteProduct,
   deleteAllProducts,
-} from "../../app/utils/products-crud";
-import * as ProductsSearch from "../../app/utils/products-search";
-import { ProductResponse } from "../../app/types/products";
-import { TAG } from "../../app/tags/tags";
+} from "../../../app/fakeapi-platzi/utils/products-crud";
+import * as ProductsSearch from "../../../app/fakeapi-platzi/utils/products-search";
+import { ProductResponse } from "../../../app/fakeapi-platzi/types/products";
+import { TAG } from "../../../app/fakeapi-platzi/tags/tags";
 
 test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.positive] }, () => {
   let productId: number;
