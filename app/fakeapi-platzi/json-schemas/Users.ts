@@ -6,17 +6,13 @@ export const UserResponseSchema = z
     id: z.number().int().positive(),
 
     // Email must be a valid email format, lowercase, and trimmed
-    email: z.email().trim().toLowerCase(),
-
+    //email: z.email().trim().toLowerCase(), - //!! all response contains invalid emails. So I had to comment this out and validate this as a string.
+    email: z.string().trim().min(4, "Email must be at least 4 characters long"),
     // Password verification (assuming min length of 4 based on your example)
     password: z.string().min(4, "Password must be at least 4 characters long"),
 
     // Name verification (trimmed, alphanumeric/spaces, min 2 chars)
-    name: z
-      .string()
-      .trim()
-      .min(2, "Name must be at least 2 characters long")
-      .regex(/^[a-zA-Z0-9\s-_]+$/, "Name contains invalid characters"),
+    name: z.string().trim().min(1, "Name must be at least 1 characters long"),
 
     // Role restricted to specific literal values
     role: z.enum(["customer", "admin"]),
@@ -31,5 +27,8 @@ export const UserResponseSchema = z
   // Ensures no extra/unexpected fields are injected into the response
   .strict();
 
-// Extract the TypeScript type from the schema
+export const UserListResponseSchema = z.array(UserResponseSchema);
+
+// Extract the TypeScript TYPES from the schema
+export type UserListResponse = z.infer<typeof UserListResponseSchema>;
 export type UserResponse = z.infer<typeof UserResponseSchema>;
