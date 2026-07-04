@@ -1,11 +1,8 @@
-import { expect, APIRequestContext } from "@playwright/test";
-import { ProductData, ProductResponse } from "../types/products";
+import { APIRequestContext } from "@playwright/test";
+import { ProductData, ProductResponse } from "../../types/products";
 
 // create a new product POST
-export async function createProduct(
-  request: APIRequestContext,
-  newProduct: ProductData,
-): Promise<ProductResponse> {
+export async function createProduct(request: APIRequestContext, newProduct: ProductData): Promise<ProductResponse> {
   const response = await request.post("/api/v1/products/", {
     data: newProduct,
     failOnStatusCode: true,
@@ -25,11 +22,7 @@ export async function readProduct(request: APIRequestContext, productId?: Number
 }
 
 // update a product (PUT)
-export async function updateProduct(
-  request: APIRequestContext,
-  updProduct: ProductData,
-  productId: Number,
-) {
+export async function updateProduct(request: APIRequestContext, updProduct: ProductData, productId: Number) {
   const response = await request.put(`/api/v1/products/${productId}`, {
     data: updProduct,
     failOnStatusCode: true,
@@ -47,10 +40,7 @@ export async function deleteProduct(request: APIRequestContext, productId: Numbe
 }
 
 // delete all products by an array (DELETE)
-export async function deleteAllProducts(
-  request: APIRequestContext,
-  productIds: string[],
-): Promise<void> {
+export async function deleteAllProducts(request: APIRequestContext, productIds: string[]): Promise<void> {
   for (const productId of productIds) {
     await request.delete(`/api/v1/products/${productId}`, { failOnStatusCode: true });
   }

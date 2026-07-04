@@ -6,8 +6,8 @@ import {
   updateProduct,
   deleteProduct,
   deleteAllProducts,
-} from "../../../app/fakeapi-platzi/utils/products-crud";
-import * as ProductsSearch from "../../../app/fakeapi-platzi/utils/products-search";
+} from "../../../app/fakeapi-platzi/utils/products/products-crud";
+import * as ProductsSearch from "../../../app/fakeapi-platzi/utils/products/products-search";
 import { ProductResponse } from "../../../app/fakeapi-platzi/types/products";
 import { TAG } from "../../../app/fakeapi-platzi/tags/tags";
 
