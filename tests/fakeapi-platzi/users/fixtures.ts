@@ -12,18 +12,18 @@ type MyFixtures = {
 export const test = base.extend<MyFixtures>({
   requestData: async ({}, use) => {
     // prepare a random test data
-    const testUserNumber = faker.number.float({ min: 1, max: 100, fractionDigits: 5 });
+    const testUserNumber = faker.string.uuid();
 
     const newUser: UserPayload = {
-      name: `YOuser#${testUserNumber}`,
-      email: `YOuser#${testUserNumber}@gm1.com`,
+      name: `YOuser${testUserNumber}`,
+      email: `YOuser${testUserNumber}@gm1.com`,
       password: "1234",
       avatar: "https://picsum.photos/800",
     };
 
     const updatedUser: UserPayload = {
-      name: `YOuserUpd#${testUserNumber}`,
-      email: `YOuserUpd#${testUserNumber}@gm1.com`,
+      name: `YOuserUpd${testUserNumber}`,
+      email: `YOuserUpd${testUserNumber}@gm1.com`,
       password: "1234",
       avatar: "https://picsum.photos/800",
     };

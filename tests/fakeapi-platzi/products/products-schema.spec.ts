@@ -1,17 +1,13 @@
 import { expect } from "@playwright/test";
 import { test } from "./fixtures";
 // helpers
-import {
-  createProduct,
-  readProduct,
-  deleteProduct,
-} from "../../../app/fakeapi-platzi/utils/products/products-crud";
+import { createProduct, readProduct, deleteProduct } from "../../../app/fakeapi-platzi/utils/products/products-crud";
 import { TAG } from "../../../app/fakeapi-platzi/tags/tags";
 // types and schemas
 import { ProductResponse } from "../../../app/fakeapi-platzi/types/products";
 import { Products } from "../../../app/fakeapi-platzi/json-schemas/Products";
 
-test.describe("Schema validation of /Products: ", { tag: TAG.schemaValidation }, () => {
+test.describe("Schema validation of /Products: ", { tag: [TAG.schemaValidation, TAG.positive] }, () => {
   let productId: number;
   let productPostResponse: ProductResponse;
 

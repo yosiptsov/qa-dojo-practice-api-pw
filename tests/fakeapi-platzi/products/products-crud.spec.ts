@@ -11,15 +11,12 @@ import * as ProductsSearch from "../../../app/fakeapi-platzi/utils/products/prod
 import { ProductResponse } from "../../../app/fakeapi-platzi/types/products";
 import { TAG } from "../../../app/fakeapi-platzi/tags/tags";
 
-test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.positive] }, () => {
+test.describe("created product should: ", { tag: [TAG.product, TAG.crud, TAG.positive] }, () => {
   let productId: number;
 
   test.beforeAll(async ({ request }) => {
     // check if test products from previous runs exist and delete them
-    const findOldTestProducts = await ProductsSearch.findProductsBySubString(
-      request,
-      "Hogwarts castle LEGO",
-    );
+    const findOldTestProducts = await ProductsSearch.findProductsBySubString(request, "Hogwarts castle LEGO");
     if (findOldTestProducts.length > 0) {
       await deleteAllProducts(request, findOldTestProducts);
       console.log("The following old test data products have been deleted: ", findOldTestProducts);
@@ -37,18 +34,14 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     expect(delResponse.status(), `Product id = ${productId} was not deleted!`).toBe(200);
   });
 
-  test("be present and have proper fields && values - |test id: L12:t1|", async ({
-    request,
-    requestData,
-  }) => {
-    const { getProdResponse, getProdResponseJson } =
-      await test.step("Read created product with get", async () => {
-        const getProdResponse = await readProduct(request, productId);
-        const getProdResponseJson = await getProdResponse.json();
-        return { getProdResponse, getProdResponseJson };
-      });
+  test("be present and have proper fields && values - |test id: L12:t1|", async ({ request, requestData }) => {
+    const { getProdResponse, getProdResponseJson } = await test.step("Read created product with get", async () => {
+      const getProdResponse = await readProduct(request, productId);
+      const getProdResponseJson = await getProdResponse.json();
+      return { getProdResponse, getProdResponseJson };
+    });
 
-    await test.step("Verify response status", async () => {
+    await test.step("Verify response status is 200 / OK", async () => {
       expect(getProdResponse.status()).toBe(200);
       expect(getProdResponse.statusText()).toBe("OK");
     });
@@ -73,12 +66,11 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
   });
 
   test("be present in the products list - |test id: L12:t2|", async ({ request, requestData }) => {
-    const { getProdResponse, getProdResponseJson } =
-      await test.step("Read created product with get", async () => {
-        const getProdResponse = await readProduct(request);
-        const getProdResponseJson = await getProdResponse.json();
-        return { getProdResponse, getProdResponseJson };
-      });
+    const { getProdResponse, getProdResponseJson } = await test.step("Read created product with get", async () => {
+      const getProdResponse = await readProduct(request);
+      const getProdResponseJson = await getProdResponse.json();
+      return { getProdResponse, getProdResponseJson };
+    });
 
     const foundProd = await test.step("find product in the list", () => {
       return getProdResponseJson.find((prod: ProductResponse) => prod.id === productId);
@@ -104,10 +96,7 @@ test.describe("created product should: ", { tag: [TAG.product, TAG.create, TAG.p
     });
   });
 
-  test("be present in the list with updated data - |test id: L12:t3|", async ({
-    request,
-    requestData,
-  }) => {
+  test("be present in the list with updated data - |test id: L12:t3|", async ({ request, requestData }) => {
     await updateProduct(request, requestData.updatedProduct, productId);
 
     const getProdResponse = await readProduct(request, productId);
