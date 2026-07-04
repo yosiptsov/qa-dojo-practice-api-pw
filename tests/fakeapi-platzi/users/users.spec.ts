@@ -1,11 +1,14 @@
 import { expect } from "@playwright/test";
 // fixture prepares test data: newUser, Updated user
 import { test } from "./fixtures";
-// types
-import { UserPayload } from "../../../app/fakeapi-platzi/types/users";
-import { UserResponse } from "../../../app/fakeapi-platzi/json-schemas/Users";
 // schema
-import { UserResponseSchema, UserListResponseSchema } from "../../../app/fakeapi-platzi/json-schemas/Users";
+import {
+  UserResponseSchema,
+  UserListResponseSchema,
+  UserNotFoundSchema,
+} from "../../../app/fakeapi-platzi/json-schemas/Users";
+//types
+import { UserNotFoundResponse } from "../../../app/fakeapi-platzi/json-schemas/Users";
 // helpers CRUD
 import { createUser, readUsers } from "../../../app/fakeapi-platzi/utils/users/users-crud";
 // tags from enum
@@ -82,19 +85,24 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
       });
 
       await test.step("contains just added user", async () => {
-        const foundUser = allUsersList.json.find((elem) => elem.id === createdUser.json.id);
-        expect(foundUser).toBeDefined();
+        const allUsersArray = allUsersList.json;
+        if (Array.isArray(allUsersArray)) {
+          const foundUser = allUsersArray.find((elem) => elem.id === createdUser.json.id);
+          expect(foundUser).toBeDefined();
+        }
       });
 
       await test.step("all users have role defined, one of customer | admin", async () => {
         const allUsersArray = allUsersList.json;
-        for (const user of allUsersArray) {
-          expect(["customer", "admin"]).toContain(user.role);
+        if (Array.isArray(allUsersArray)) {
+          for (const user of allUsersArray) {
+            expect(["customer", "admin"]).toContain(user.role);
+          }
         }
       });
     });
 
-    test("GET - for one user by ID response should: |test id: L13-3:t3|", async ({ request, requestData }) => {
+    test("GET {id} - for one user by ID response should: |test id: L13-3:t3|", async ({ request, requestData }) => {
       //Arrange
       const createdUser = await test.step("Create a new user", async () => {
         const createdUser = await createUser(request, requestData.newUser);
@@ -131,6 +139,37 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
           password: requestData.newUser.password,
           email: requestData.newUser.email,
           avatar: requestData.newUser.avatar,
+        });
+      });
+    });
+  });
+
+  test.describe("Negative tests for all HTTP methods", { tag: [TAG.negative, TAG.schemaValidation] }, () => {
+    test("GET request should return 400 / Bad Request for a non-existent User ID", async ({ request }) => {
+      //Arrange
+      const nonExistentUserId = 99999999;
+      //Act
+      const tryToGetAUser = await test.step("trying to get a user with a non-existent User ID", async () => {
+        const tryToGetAUser = await readUsers(request, nonExistentUserId, false); //send with func attr failOnStatusCode = false to get an error
+        return tryToGetAUser;
+      });
+      //Assert
+      await test.step("response status is 400 / Bad request", () => {
+        expect(tryToGetAUser.response.status()).toBe(400);
+        expect(tryToGetAUser.response.statusText()).toBe("Bad Request");
+      });
+
+      await test.step("JSON schema matches ZOD template", async () => {
+        const data = UserNotFoundSchema.safeParse(tryToGetAUser.json);
+        expect(data.success, { message: data.error?.message }).toBeTruthy();
+      });
+
+      await test.step("Error name and message match the error", () => {
+        expect(tryToGetAUser.json).toMatchObject({
+          name: "EntityNotFoundError",
+          message: expect.stringContaining(
+            `Could not find any entity of type \"User\" matching: {\n    \"id\": ${nonExistentUserId}\n}`,
+          ),
         });
       });
     });

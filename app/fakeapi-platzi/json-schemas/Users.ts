@@ -29,6 +29,23 @@ export const UserResponseSchema = z
 
 export const UserListResponseSchema = z.array(UserResponseSchema);
 
+export const UserNotFoundSchema = z
+  .object({
+    // Path must be a valid relative api path or URL structure
+    path: z.string().trim().startsWith("/", "Path must be a valid absolute path or URL"),
+
+    // ISO 8601 Timestamp converted into a live JavaScript Date object
+    timestamp: z.iso.datetime().pipe(z.coerce.date()),
+
+    // Error identifier/class name
+    name: z.string().trim().min(1, "Error name is required"),
+
+    // Human-readable message or serialized debug info
+    message: z.string().trim().min(1, "Error message cannot be empty"),
+  })
+  .strict(); // Blocks any hidden fields leaking from backend stack traces
+
 // Extract the TypeScript TYPES from the schema
 export type UserListResponse = z.infer<typeof UserListResponseSchema>;
 export type UserResponse = z.infer<typeof UserResponseSchema>;
+export type UserNotFoundResponse = z.infer<typeof UserNotFoundSchema>;

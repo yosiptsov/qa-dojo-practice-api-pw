@@ -13,7 +13,7 @@ export async function createProduct(request: APIRequestContext, newProduct: Prod
 }
 
 // read product / products GET
-export async function readProduct(request: APIRequestContext, productId?: Number) {
+export async function readProduct(request: APIRequestContext, productId?: number) {
   // product id can be empty, so let's prepare url
   const url = productId ? `/api/v1/products/${productId}` : "/api/v1/products/";
   const response = await request.get(url, { failOnStatusCode: true });
@@ -22,7 +22,7 @@ export async function readProduct(request: APIRequestContext, productId?: Number
 }
 
 // update a product (PUT)
-export async function updateProduct(request: APIRequestContext, updProduct: ProductData, productId: Number) {
+export async function updateProduct(request: APIRequestContext, updProduct: ProductData, productId: number) {
   const response = await request.put(`/api/v1/products/${productId}`, {
     data: updProduct,
     failOnStatusCode: true,
@@ -32,7 +32,7 @@ export async function updateProduct(request: APIRequestContext, updProduct: Prod
 }
 
 // delete a product (DELETE)
-export async function deleteProduct(request: APIRequestContext, productId: Number) {
+export async function deleteProduct(request: APIRequestContext, productId: number) {
   const response = await request.delete(`/api/v1/products/${productId}`, {
     failOnStatusCode: true,
   });
