@@ -9,7 +9,7 @@ import {
   UserResponse,
 } from "../../../app/fakeapi-platzi/json-schemas/Users";
 // helpers CRUD
-import { createUser, readUsers } from "../../../app/fakeapi-platzi/utils/users/users-crud";
+import { createUser, readUsers, updateUser } from "../../../app/fakeapi-platzi/utils/users/users-crud";
 // tags from enum
 import { TAG } from "../../../app/fakeapi-platzi/tags/tags";
 
@@ -113,7 +113,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
       });
 
       // using toPass - let's imaging the user is created asynchronously by some worker which works with a queue
-      // ! this block is only to try to use expect().toPass. It's returned value is not used in further tests
+      // ! this block is only to try to use expect().toPass. It's returned value is not used in further tests.
       // ? Зробив через Step щоб це повертало значення. Також складно працювати з типами, треба костилі в вигляді '!'.
       const getCreatedUserToPassFromTestStep = await test.step("Get created user using toPass", async () => {
         let getCreatedUserToPass: UserResponse;
@@ -160,10 +160,52 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
         });
       });
     });
+
+    test("PUT {id} - request should update only field 'role' |test id: L13-3:t4|", async ({ request, requestData }) => {
+      //Arrange
+      const createdUser = await test.step("Create a new user", async () => {
+        const createdUser = await createUser(request, requestData.newUser);
+        return createdUser;
+      });
+      //Act
+      const updatedUser = await test.step("Update created user", async () => {
+        const updatedUser = await updateUser(request, createdUser.json.id, { role: "customer" }, false);
+        return updatedUser;
+      });
+      //Assert
+      await test.step("response status is 200 / OK", () => {
+        expect(updatedUser.response.status()).toBe(200);
+        expect(updatedUser.response.statusText()).toBe("OK");
+      });
+
+      await test.step("JSON schema matches ZOD template", async () => {
+        const data = UserResponseSchema.safeParse(updatedUser.json);
+        expect(data.success, { message: data.error?.message }).toBeTruthy();
+      });
+
+      await test.step("correct headers", () => {
+        const headers = updatedUser.response.headers();
+        expect.soft(headers["content-type"]).toContain("application/json");
+        expect.soft(headers["cross-origin-opener-policy"]).toBe("same-origin");
+        expect.soft(headers["cross-origin-resource-policy"]).toBe("same-origin");
+        expect.soft(headers["content-security-policy"]).toContain("base-uri");
+      });
+
+      await test.step("only field 'role' was updated", () => {
+        expect(updatedUser.json).toMatchObject({
+          id: createdUser.json.id,
+          name: createdUser.json.name,
+          password: createdUser.json.password,
+          email: createdUser.json.email,
+          avatar: createdUser.json.avatar,
+          role: "customer",
+        });
+      });
+    });
   });
 
   test.describe("Negative tests for all HTTP methods", { tag: [TAG.negative, TAG.schemaValidation] }, () => {
-    test("GET request should return 400 / Bad Request for a non-existent User ID - |test id: L13-3:t4|", async ({
+    test("GET request should return 400 / Bad Request for a non-existent User ID - |test id: L13-3:t5|", async ({
       request,
     }) => {
       //Arrange

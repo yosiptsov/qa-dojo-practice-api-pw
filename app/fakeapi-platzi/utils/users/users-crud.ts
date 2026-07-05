@@ -8,10 +8,11 @@ import { UserResponse, UserNotFoundResponse } from "../../json-schemas/Users";
 export async function createUser(
   request: APIRequestContext,
   newUser: UserPayload,
+  failOnStatusCode: boolean = true,
 ): Promise<{ response: APIResponse; json: UserResponse }> {
   const response = await request.post("/api/v1/users/", {
     data: newUser,
-    failOnStatusCode: true,
+    failOnStatusCode: failOnStatusCode,
   });
 
   const json = await response.json();
@@ -27,6 +28,21 @@ export async function readUsers(
   const url = userId ? `/api/v1/users/${userId}` : "/api/v1/users/"; // user id can be empty, so let's prepare url
   const response = await request.get(url, { failOnStatusCode: failOnStatusCode }); // true by default
 
+  const json = await response.json();
+  return { response, json };
+}
+
+// PUT: Update a user by ID
+export async function updateUser(
+  request: APIRequestContext,
+  userId: number,
+  fieldsToUpdate: {},
+  failOnStatusCode: boolean = true,
+): Promise<{ response: APIResponse; json: UserResponse[] | UserResponse | UserNotFoundResponse }> {
+  const response = await request.put(`/api/v1/users/${userId}`, {
+    data: fieldsToUpdate,
+    failOnStatusCode: failOnStatusCode,
+  });
   const json = await response.json();
   return { response, json };
 }
