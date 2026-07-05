@@ -45,5 +45,27 @@ export default defineConfig({
         },
       },
     },
+    {
+      name: "conduit",
+      testDir: "./tests/conduit",
+      use: {
+        baseURL: process.env.CONDUIT_BASE_URL || "https://conduit-api.learnwebdriverio.com/",
+        extraHTTPHeaders: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      },
+    },
+    {
+      name: "newsapi",
+      testDir: "./tests/newsapi",
+      use: {
+        baseURL: process.env.NEWSAPI_BASE_URL || "https://newsapi.org/",
+        extraHTTPHeaders: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      },
+    },
   ],
 });

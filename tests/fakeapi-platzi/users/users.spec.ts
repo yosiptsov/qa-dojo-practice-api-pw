@@ -235,5 +235,59 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
         });
       });
     });
+
+    test("PUT request should return 400 / Bad Request for a non-existent User ID - |test id: L13-3:t6|", async ({
+      request,
+      requestData,
+    }) => {
+      //Arrange
+      const nonExistentUserId = 99999999;
+      //Act
+      const updatedUser = await test.step("trying to update a user by a non-existent User ID", async () => {
+        const updatedUser = await updateUser(request, nonExistentUserId, { any: "field" }, false); // 'false' to turn failOnStatusCode off.
+        return updatedUser;
+      });
+      //Assert
+      await test.step("response status is 400 / Bad request", () => {
+        expect(updatedUser.response.status()).toBe(400);
+        expect(updatedUser.response.statusText()).toBe("Bad Request");
+      });
+
+      await test.step("JSON schema matches ZOD template", async () => {
+        const data = UserNotFoundSchema.safeParse(updatedUser.json);
+        expect(data.success, { message: data.error?.message }).toBeTruthy();
+      });
+
+      await test.step("Error name and message match the error", () => {
+        expect(updatedUser.json).toMatchObject({
+          name: "EntityNotFoundError",
+          message: expect.stringContaining(
+            `Could not find any entity of type \"User\" matching: {\n    \"id\": ${nonExistentUserId}\n}`,
+          ),
+        });
+      });
+    });
+
+    // ! SKIP this test for now: currently, it's allowed to create several users with the same email. This should be fixed.
+    test.fixme("POST request should return an error if email is not unique: - |test id: L13-3:t7|", async ({
+      request,
+      requestData,
+    }) => {
+      //Arrange
+      const createdUser1 = await test.step("Create a first user", async () => {
+        const createdUser1 = await createUser(request, requestData.newUser);
+        return createdUser1;
+      });
+      //Act
+      const createdUser2 = await test.step("Create a second user with the same email", async () => {
+        const createdUser2 = await createUser(request, requestData.newUser, false); // 'false' to turn failOnStatusCode off.
+        return createdUser2;
+      });
+      //Assert
+      await test.step("Attempt to create a user with the same email should return:", async () => {
+        expect.soft(createdUser2.response.status()).toBe(422);
+        expect.soft(createdUser2.response.statusText()).toBe("422 Unprocessable Entity");
+      });
+    });
   });
 });
