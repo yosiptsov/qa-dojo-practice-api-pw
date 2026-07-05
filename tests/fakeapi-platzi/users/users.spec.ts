@@ -6,9 +6,8 @@ import {
   UserResponseSchema,
   UserListResponseSchema,
   UserNotFoundSchema,
+  UserResponse,
 } from "../../../app/fakeapi-platzi/json-schemas/Users";
-//types
-import { UserNotFoundResponse } from "../../../app/fakeapi-platzi/json-schemas/Users";
 // helpers CRUD
 import { createUser, readUsers } from "../../../app/fakeapi-platzi/utils/users/users-crud";
 // tags from enum
@@ -24,7 +23,6 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
         return createdUser;
       });
       //Assert
-
       await test.step("response status is 201 / Created", () => {
         expect(createdUser.response.status()).toBe(201);
         expect(createdUser.response.statusText()).toBe("Created");
@@ -113,6 +111,26 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
         const getCreatedUser = await readUsers(request, createdUser.json.id);
         return getCreatedUser;
       });
+
+      // using toPass - let's imaging the user is created asynchronously by some worker which works with a queue
+      // ! this block is only to try to use expect().toPass. It's returned value is not used in further tests
+      // ? Зробив через Step щоб це повертало значення. Також складно працювати з типами, треба костилі в вигляді '!'.
+      const getCreatedUserToPassFromTestStep = await test.step("Get created user using toPass", async () => {
+        let getCreatedUserToPass: UserResponse;
+        await expect(async () => {
+          const getCreatedUser = await readUsers(request, createdUser.json.id, false); // false - turns failOnStatusCode off to get a possible error here
+          expect(getCreatedUser.response.status()).toBe(200);
+
+          getCreatedUserToPass = getCreatedUser.json as UserResponse;
+        }).toPass({
+          timeout: 5_000,
+          intervals: [3_000, 5_000, 10_000],
+        });
+        expect(getCreatedUserToPass!).toBeDefined();
+        return getCreatedUserToPass!;
+      });
+      console.log("getCreatedUserToPassFromTestStep", getCreatedUserToPassFromTestStep);
+
       //Assert
       await test.step("response status is 201 / OK", () => {
         expect(getCreatedUser.response.status()).toBe(200);
@@ -132,7 +150,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
         expect.soft(headers["content-security-policy"]).toContain("base-uri");
       });
 
-      await test.step("all fields of gotten user equal to created", () => {
+      await test.step("all fields of gotten user are equal to created", () => {
         expect(getCreatedUser.json).toMatchObject({
           id: createdUser.json.id,
           name: requestData.newUser.name,
@@ -145,7 +163,9 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
   });
 
   test.describe("Negative tests for all HTTP methods", { tag: [TAG.negative, TAG.schemaValidation] }, () => {
-    test("GET request should return 400 / Bad Request for a non-existent User ID", async ({ request }) => {
+    test("GET request should return 400 / Bad Request for a non-existent User ID - |test id: L13-3:t4|", async ({
+      request,
+    }) => {
       //Arrange
       const nonExistentUserId = 99999999;
       //Act

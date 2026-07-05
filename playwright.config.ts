@@ -38,7 +38,7 @@ export default defineConfig({
       name: "fakeapi-platzi",
       testDir: "./tests/fakeapi-platzi",
       use: {
-        baseURL: "https://api.escuelajs.co/api/v1",
+        baseURL: process.env.FAKEAPI_BASE_URL || "https://api.escuelajs.co/",
         extraHTTPHeaders: {
           Accept: "application/json",
           "Content-Type": "application/json",

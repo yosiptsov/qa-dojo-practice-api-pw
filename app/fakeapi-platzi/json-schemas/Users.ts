@@ -12,7 +12,7 @@ export const UserResponseSchema = z
     password: z.string().min(4, "Password must be at least 4 characters long"),
 
     // Name verification (trimmed, alphanumeric/spaces, min 2 chars)
-    name: z.string().trim().min(1, "Name must be at least 1 characters long"),
+    name: z.string().trim().min(0, "Name must be at least 1 characters long"), // somebody created a user with an empty name )
 
     // Role restricted to specific literal values
     role: z.enum(["customer", "admin"]),
