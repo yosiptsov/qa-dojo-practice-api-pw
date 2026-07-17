@@ -1,14 +1,12 @@
-import { test } from "@playwright/test";
+import { test } from "./fixtures";
 
 test("Get some news, auth trough the fixture", async ({ request }) => {
   const url = "/v2/everything";
-  const apiKey = process.env.NEWSAPI_API_KEY;
   const response = await request.get(url, {
     failOnStatusCode: true,
     params: {
-      apiKey: `${apiKey}`,
-      q: "Apple",
-      from: "2026-07-01",
+      q: "FIFA",
+      from: "2026-07-16",
     },
   });
   const json = await response.json();

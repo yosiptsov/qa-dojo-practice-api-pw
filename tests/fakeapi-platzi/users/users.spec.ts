@@ -116,7 +116,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
       // ! this block is only to try to use expect().toPass. It's returned value is not used in further tests.
       // ? Зробив через Step щоб це повертало значення. Також складно працювати з типами, треба костилі в вигляді '!'.
       const getCreatedUserToPassFromTestStep = await test.step("Get created user using toPass", async () => {
-        let getCreatedUserToPass: UserResponse;
+        let getCreatedUserToPass: UserResponse | undefined;
         await expect(async () => {
           const getCreatedUser = await readUsers(request, createdUser.json.id, false); // false - turns failOnStatusCode off to get a possible error here
           expect(getCreatedUser.response.status()).toBe(200);
@@ -161,7 +161,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
       });
     });
 
-    test("PUT {id} - request should update only field 'role' |test id: L13-3:t4|", async ({ request, requestData }) => {
+    test("PUT {id} - request should update only field 'role' |L13-3:t4|", async ({ request, requestData }) => {
       //Arrange
       const createdUser = await test.step("Create a new user", async () => {
         const createdUser = await createUser(request, requestData.newUser);
