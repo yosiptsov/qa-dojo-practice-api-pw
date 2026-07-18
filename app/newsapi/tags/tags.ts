@@ -1,4 +1,4 @@
 export enum TAG {
-  product = "@news",
-  smoke = "@search",
+  news = "@news",
+  search = "@search",
 }
