@@ -10,7 +10,7 @@ export async function searchNewsByParams(
   fromDate: string = "",
   toDate: string = "",
   page: number = 1,
-  pageSize: number = 1,
+  pageSize: number = 5,
   failOnStatusCode: boolean = true,
 ): Promise<{ response: APIResponse; json: NewsApiResponse }> {
   const response = await request.get("/v2/everything", {
