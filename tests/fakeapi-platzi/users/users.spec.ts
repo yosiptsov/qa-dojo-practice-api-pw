@@ -15,7 +15,7 @@ import { TAG } from "../../../app/fakeapi-platzi/tags/tags";
 
 test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () => {
   test.describe("CRUD and schema validation: ", { tag: [TAG.crud, TAG.schemaValidation, TAG.positive] }, () => {
-    test("POST - Create a user, response should have: - |test id: L13-3:t1|", async ({ request, requestData }) => {
+    test("POST - Create a user, response should have: |L13-3:t1|", async ({ request, requestData }) => {
       //Arrange
       //Act
       const createdUser = await test.step("Create a new user", async () => {
@@ -52,7 +52,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
       });
     });
 
-    test("GET - response for all users should have: |test id: L13-3:t2|", async ({ request, requestData }) => {
+    test("GET - response for all users should have: |L13-3:t2|", async ({ request, requestData }) => {
       //Arrange
       const createdUser = await test.step("Create a new user", async () => {
         const createdUser = await createUser(request, requestData.newUser);
@@ -100,7 +100,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
       });
     });
 
-    test("GET {id} - for one user by ID response should: |test id: L13-3:t3|", async ({ request, requestData }) => {
+    test("GET {id} - for one user by ID response should: |L13-3:t3|", async ({ request, requestData }) => {
       //Arrange
       const createdUser = await test.step("Create a new user", async () => {
         const createdUser = await createUser(request, requestData.newUser);
@@ -205,9 +205,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
   });
 
   test.describe("Negative tests for all HTTP methods", { tag: [TAG.negative, TAG.schemaValidation] }, () => {
-    test("GET request should return 400 / Bad Request for a non-existent User ID - |test id: L13-3:t5|", async ({
-      request,
-    }) => {
+    test("GET request should return 400 / Bad Request for a non-existent User ID |L13-3:t5|", async ({ request }) => {
       //Arrange
       const nonExistentUserId = 99999999;
       //Act
@@ -236,7 +234,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
       });
     });
 
-    test("PUT request should return 400 / Bad Request for a non-existent User ID - |test id: L13-3:t6|", async ({
+    test("PUT request should return 400 / Bad Request for a non-existent User ID |L13-3:t6|", async ({
       request,
       requestData,
     }) => {
@@ -269,7 +267,7 @@ test.describe("Verification of endpoint /api/v1/users", { tag: TAG.users }, () =
     });
 
     // ! SKIP this test for now: currently, it's allowed to create several users with the same email. This should be fixed.
-    test.fixme("POST request should return an error if email is not unique: - |test id: L13-3:t7|", async ({
+    test.fixme("POST request should return an error if email is not unique: - |L13-3:t7|", async ({
       request,
       requestData,
     }) => {
