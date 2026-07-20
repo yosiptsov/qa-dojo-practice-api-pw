@@ -6,13 +6,13 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 const envSchemaFakeApi = z.object({
   //fakeapi vars
-  FAKEAPI_BASE_URL: z.url().default("https://api.escuelajs.co/"),
+  FAKEAPI_BASE_URL: z.url(),
   FAKEAPI_USER_PASS: z.string(),
 });
 
 const envSchemaConduit = z.object({
   //conduit vars
-  CONDUIT_BASE_URL: z.url().default("https://conduit-api.learnwebdriverio.com/"),
+  CONDUIT_BASE_URL: z.url(),
   CONDUIT_DEFAULT_EMAIL: z.email("Email is required for tests!"),
   CONDUIT_DEFAULT_PASS: z.string("Password is required for tests!"),
   CONDUIT_ADMIN_EMAIL: z.email("Email is required for tests!"),
@@ -23,7 +23,7 @@ const envSchemaConduit = z.object({
 
 const envSchemaNewsapi = z.object({
   //newsapi vars
-  NEWSAPI_BASE_URL: z.url().default("https://newsapi.org/"),
+  NEWSAPI_BASE_URL: z.url(),
   NEWSAPI_API_KEY: z.string(),
 });
 

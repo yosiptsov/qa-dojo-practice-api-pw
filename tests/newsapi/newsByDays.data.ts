@@ -1,11 +1,6 @@
 import { expect } from "@playwright/test";
 import { getPastDate } from "../../app/newsapi/utils/workingWDate";
 
-const oneDayAgo = new Date();
-const twoDaysAgo = new Date();
-const threeDaysAgo = new Date();
-const fourDaysAgo = new Date();
-
 const days = {
   oneDayAgo: getPastDate(1),
   twoDaysAgo: getPastDate(2),
