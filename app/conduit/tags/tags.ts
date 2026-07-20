@@ -3,4 +3,5 @@ export enum TAG {
   nonAuthRequests = "@nonAuthRequests",
   isAuthOption = "@isAuthOption",
   authorized = "@authorized",
+  user = "@user",
 }

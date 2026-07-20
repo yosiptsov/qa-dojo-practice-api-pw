@@ -34,6 +34,21 @@ export const CreateUserResponseSchema = z.object({
   user: UserResponseSchema,
 });
 
+// Schema for the user profile response object
+export const UserProfileResponseSchema = z.object({
+  // Validate that it is a proper email format and not empty
+  email: z.email("Invalid email format").min(1, "Email is a required field"),
+
+  // Validate the username
+  username: z.string().min(1, "Username cannot be empty"),
+
+  // Bio can be a string or null if the user hasn't filled it out
+  bio: z.string().nullable(),
+});
+
+// Automatic export of the TypeScript type based on the schema
+export type UserProfileResponse = z.infer<typeof UserProfileResponseSchema>;
+
 // Automatic export of the TypeScript type based on the created response schema
 export type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
 // Export of the TypeScript type based on the created payload schema

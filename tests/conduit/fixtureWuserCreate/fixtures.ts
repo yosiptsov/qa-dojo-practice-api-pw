@@ -47,7 +47,7 @@ export const test = base.extend<Fixtures>({
     try {
       // CASE 2: Need to create a NEW unique user
       if (isNeedToCreateUser) {
-        const testUserNumber = faker.string.uuid();
+        const testUserNumber = Date.now();
 
         // If the test did not pass a custom payload, generate a random one
         const generatedPayload: CreateUserPayload = newUserPayload || {
