@@ -15,6 +15,9 @@ export default defineConfig({
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: true,
+  // globalSetup:
+  globalSetup: "./global.setup.ts",
+  // globalTeardown: './global-teardown.ts',
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -38,7 +41,7 @@ export default defineConfig({
       name: "fakeapi-platzi",
       testDir: "./tests/fakeapi-platzi",
       use: {
-        baseURL: process.env.FAKEAPI_BASE_URL || "https://api.escuelajs.co/",
+        baseURL: process.env.FAKEAPI_BASE_URL || "https://api.escuelajs.co",
         extraHTTPHeaders: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -49,7 +52,7 @@ export default defineConfig({
       name: "conduit",
       testDir: "./tests/conduit",
       use: {
-        baseURL: process.env.CONDUIT_BASE_URL || "https://conduit-api.learnwebdriverio.com/",
+        baseURL: process.env.CONDUIT_BASE_URL || "https://conduit-api.learnwebdriverio.com",
         extraHTTPHeaders: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -60,7 +63,7 @@ export default defineConfig({
       name: "newsapi",
       testDir: "./tests/newsapi",
       use: {
-        baseURL: process.env.NEWSAPI_BASE_URL || "https://newsapi.org/",
+        baseURL: process.env.NEWSAPI_BASE_URL || "https://newsapi.org",
         extraHTTPHeaders: {
           Accept: "application/json",
           "Content-Type": "application/json",
