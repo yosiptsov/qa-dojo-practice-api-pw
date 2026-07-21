@@ -1,7 +1,13 @@
 import { APIRequestContext, APIResponse } from "@playwright/test";
 
 // types
-import { CreateUserPayload, CreateUserResponse, UserProfileResponse } from "../json-schemas/Users";
+import {
+  CreateUserPayload,
+  CreateUserResponse,
+  UserProfileResponse,
+  UnauthorizedResponse,
+  UserUpdateResponse,
+} from "../json-schemas/Users";
 
 // POST: Create a new user
 export async function createUser(
@@ -21,11 +27,11 @@ export async function createUser(
 // PUT: Update a user profile
 export async function updateUser(
   request: APIRequestContext,
-  fieldsToUpdate: {},
+  fieldsToUpdate: Partial<UserProfileResponse>,
   failOnStatusCode: boolean = true,
-): Promise<{ response: APIResponse; json: UserProfileResponse }> {
+): Promise<{ response: APIResponse; json: UserUpdateResponse | UnauthorizedResponse }> {
   const response = await request.put("/api/user", {
-    data: fieldsToUpdate,
+    data: { user: fieldsToUpdate },
     failOnStatusCode: failOnStatusCode,
   });
   const json = await response.json();

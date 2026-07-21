@@ -46,6 +46,44 @@ export const UserProfileResponseSchema = z.object({
   bio: z.string().nullable(),
 });
 
+// Schema for the nested detailed error object
+const DetailedErrorSchema = z.object({
+  name: z.literal("UnauthorizedError"),
+  message: z.string().min(1, "Error message cannot be empty"),
+  code: z.literal("credentials_required"),
+  status: z.literal(401),
+  // inner usually contains the system/library stack or specific object details,
+  // so we accept any type or unknown for this specific field
+  inner: z.unknown().optional(),
+});
+
+// Main schema for the 401 Unauthorized response
+export const UnauthorizedResponseSchema = z.object({
+  errors: z.object({
+    message: z.string().min(1, "Main error message cannot be empty"),
+    error: DetailedErrorSchema,
+  }),
+});
+
+// Schema for the inner user object
+const UserSchema = z.object({
+  username: z.string().min(1, "Username cannot be empty"),
+  email: z.string().email("Invalid email format"),
+  token: z.string().min(1, "Token is required").regex(jwtRegex, "Invalid JWT token format"),
+  bio: z.string().nullable(), // Allows null if the biography is empty
+});
+
+// Main schema for the API response
+export const UserUpdateResponseSchema = z.object({
+  user: UserSchema,
+});
+
+// Automatically export TypeScript type based on the created schema
+export type UserUpdateResponse = z.infer<typeof UserUpdateResponseSchema>;
+
+// Automatic export of the TypeScript type based on the schema
+export type UnauthorizedResponse = z.infer<typeof UnauthorizedResponseSchema>;
+
 // Automatic export of the TypeScript type based on the schema
 export type UserProfileResponse = z.infer<typeof UserProfileResponseSchema>;
 
