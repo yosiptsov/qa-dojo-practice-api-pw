@@ -1,6 +1,5 @@
 import { test } from "../fixtures/fixtures";
 import { expect } from "@playwright/test";
-import { ApiController } from "../../../app/conduit/controllers/ApiController";
 import { TAG } from "../../../app/conduit/tags/tags";
 import { faker } from "@faker-js/faker";
 import { UserUpdateResponse } from "../../../app/conduit/json-schemas/Users";

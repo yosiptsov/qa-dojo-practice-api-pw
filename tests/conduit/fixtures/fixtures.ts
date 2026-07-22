@@ -1,11 +1,9 @@
 import { APIRequestContext, test as base, request as APIRequest } from "@playwright/test";
-// helpers
-// import { createUser } from "../../../app/conduit/utils/userCrud";
 // types
 import { CreateUserPayload } from "../../../app/conduit/json-schemas/Users";
 //it takes env variables from .env through ZOD validation envValidation.ts
 import { envConduit } from "../../../envValidation";
-
+//methods
 import { ApiController } from "../../../app/conduit/controllers/ApiController";
 
 // 1. Describe types for options and our new fixture
@@ -18,7 +16,7 @@ type Fixtures = {
   existingUserPass: string; // password for the existing user
   newUserPayload: CreateUserPayload | null; // allows passing a custom payload from the test
 
-  authRequest: APIRequestContext; // Our new authorized fixture. It has name authRequest not just request, to not to change fixture 'request'
+  authRequest: APIRequestContext; // new authorized fixture. It has name authRequest not just request, to not to change fixture 'request'
   apiController: ApiController;
 };
 

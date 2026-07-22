@@ -4,4 +4,6 @@ export enum TAG {
   isAuthOption = "@isAuthOption",
   authorized = "@authorized",
   user = "@user",
+  article = "@article",
+  crud = "@crud",
 }

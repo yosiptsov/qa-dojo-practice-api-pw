@@ -68,7 +68,7 @@ export const UnauthorizedResponseSchema = z.object({
 // Schema for the inner user object
 const UserSchema = z.object({
   username: z.string().min(1, "Username cannot be empty"),
-  email: z.string().email("Invalid email format"),
+  email: z.email("Invalid email format"),
   token: z.string().min(1, "Token is required").regex(jwtRegex, "Invalid JWT token format"),
   bio: z.string().nullable(), // Allows null if the biography is empty
 });
