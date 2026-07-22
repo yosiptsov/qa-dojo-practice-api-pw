@@ -24,7 +24,7 @@ async function globalSetup(config: FullConfig) {
   });
 
   // check that newsapi works
-  await request.get(config.projects[2].use.baseURL + "v2/everything", {
+  await request.get(config.projects[2].use.baseURL + "/", {
     params: {
       offset: 0,
       limit: 1,
@@ -32,7 +32,6 @@ async function globalSetup(config: FullConfig) {
     failOnStatusCode: true,
   });
 
-  // тут буде код підготовки
   console.log("Global Setup finished");
 }
 

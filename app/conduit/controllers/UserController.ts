@@ -1,26 +1,26 @@
-import { APIRequestContext, APIResponse } from "@playwright/test";
+import { APIRequestContext } from "@playwright/test";
 import { BaseController } from "./BaseController";
 
 // types
-import {
-  CreateUserPayload,
-  CreateUserResponse,
-  UserProfileResponse,
-  UnauthorizedResponse,
-  UserUpdateResponse,
-} from "../json-schemas/Users";
+import { CreateUserPayload, UserProfileResponse } from "../json-schemas/Users";
 
 export class UserController extends BaseController {
-  endpoint = "/api/user";
+  private endpointCreate = "/api/users";
+  private endpoint = "/api/user";
 
   // POST: Create a new user
-  async createUser(
-    request: APIRequestContext,
-    newUser: CreateUserPayload,
-    failOnStatusCode: boolean = true,
-  ): Promise<{ response: APIResponse; json: CreateUserResponse }> {
-    const response = await request.post("/api/users", {
+  async createUser(newUser: CreateUserPayload, failOnStatusCode: boolean = true) {
+    const response = await this.request.post(this.endpointCreate, {
       data: newUser,
+      failOnStatusCode: failOnStatusCode,
+    });
+
+    const json = await response.json();
+    return { response, json };
+  }
+  // GET: current user
+  async getCurrentUser(failOnStatusCode: boolean = true) {
+    const response = await this.request.get(this.endpoint, {
       failOnStatusCode: failOnStatusCode,
     });
 
@@ -29,12 +29,8 @@ export class UserController extends BaseController {
   }
 
   // PUT: Update a user profile
-  async updateUser(
-    request: APIRequestContext,
-    fieldsToUpdate: Partial<UserProfileResponse>,
-    failOnStatusCode: boolean = true,
-  ): Promise<{ response: APIResponse; json: UserUpdateResponse | UnauthorizedResponse }> {
-    const response = await request.put("/api/user", {
+  async updateUser(fieldsToUpdate: Partial<UserProfileResponse>, failOnStatusCode: boolean = true) {
+    const response = await this.request.put(this.endpoint, {
       data: { user: fieldsToUpdate },
       failOnStatusCode: failOnStatusCode,
     });

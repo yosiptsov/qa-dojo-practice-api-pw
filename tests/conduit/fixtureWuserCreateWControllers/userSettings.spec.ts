@@ -1,22 +1,23 @@
 import { test } from "./fixtures";
 import { expect } from "@playwright/test";
-import { updateUser } from "../../../app/conduit/utils/userCrud";
+// import { updateUser } from "../../../app/conduit/utils/userCrud";
+import { ApiController } from "../../../app/conduit/controllers/ApiController";
 import { TAG } from "../../../app/conduit/tags/tags";
 import { faker } from "@faker-js/faker";
 import { UserUpdateResponse } from "../../../app/conduit/json-schemas/Users";
 
 test.describe("Conduit user settings update for a new user:", { tag: [TAG.authorized, TAG.user] }, () => {
   test.use({
-    isNeedToCreateUser: true,
+    isNeedToCreateUser: true, // create a new user and authorize him
   });
 
-  test("Authorized created user should be able to update it's BIO |L15:t1|", async ({ authRequest }) => {
+  test("Authorized created user should be able to update it's BIO |L15:t1|", async ({ apiController }) => {
     // Arrange
     // user will be created in fixture
     const bio: string = `Updated BIO - The last book I read was: ${faker.book.title()}`;
     // ACT
     const updatedUser = await test.step("Update the created user BIO", async () => {
-      const updatedUser = await updateUser(authRequest, { bio }, false);
+      const updatedUser = await apiController.userController.updateUser({ bio }, false);
       return updatedUser;
     });
     // Assert
@@ -34,17 +35,16 @@ test.describe("Conduit user settings update for a new user:", { tag: [TAG.author
 
 test.describe("Conduit user settings update for an existing user:", { tag: [TAG.authorized, TAG.user] }, () => {
   test.use({
-    isNeedToCreateUser: false,
-    isAuthorized: true,
+    isNeedToCreateUser: false, // use an existing user, don't create a new one
+    isAuthorized: true, // authorize existing user
   });
 
-  test("Authorized existing user should be able to update it's BIO |L15:t2|", async ({ authRequest }) => {
+  test("Authorized existing user should be able to update it's BIO |L15:t2|", async ({ apiController }) => {
     // Arrange
-    // user will be created in fixture
     const bio: string = `Updated BIO - The last book I read was: ${faker.book.title()}`;
     // ACT
     const updatedUser = await test.step("Update the created user BIO", async () => {
-      const updatedUser = await updateUser(authRequest, { bio }, false);
+      const updatedUser = await apiController.userController.updateUser({ bio }, false);
       return updatedUser;
     });
     // Assert
@@ -62,17 +62,16 @@ test.describe("Conduit user settings update for an existing user:", { tag: [TAG.
 
 test.describe("Conduit user settings update for unauthorized user", { tag: [TAG.authorized, TAG.user] }, () => {
   test.use({
-    isNeedToCreateUser: false,
-    isAuthorized: false,
+    isNeedToCreateUser: false, // don't create a new user
+    isAuthorized: false, // don't authorize user
   });
 
-  test("Unauthorized user should NOT be able to update it's BIO |L15:t3|", async ({ authRequest }) => {
+  test("Unauthorized user should NOT be able to update it's BIO |L15:t3|", async ({ apiController }) => {
     // Arrange
-    // user will be created in fixture
     const bio: string = `Updated BIO - The last book I read was: ${faker.book.title()}`;
     // ACT
     const updatedUser = await test.step("Update the created user BIO", async () => {
-      const updatedUser = await updateUser(authRequest, { bio }, false);
+      const updatedUser = await apiController.userController.updateUser({ bio }, false);
       return updatedUser;
     });
     // Assert

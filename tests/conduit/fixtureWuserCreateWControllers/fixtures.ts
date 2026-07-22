@@ -1,10 +1,12 @@
 import { APIRequestContext, test as base, request as APIRequest } from "@playwright/test";
 // helpers
-import { createUser } from "../../../app/conduit/utils/userCrud";
+// import { createUser } from "../../../app/conduit/utils/userCrud";
 // types
 import { CreateUserPayload } from "../../../app/conduit/json-schemas/Users";
 //it takes env variables from .env through ZOD validation envValidation.ts
 import { envConduit } from "../../../envValidation";
+
+import { ApiController } from "../../../app/conduit/controllers/ApiController";
 
 // 1. Describe types for options and our new fixture
 type Fixtures = {
@@ -17,6 +19,7 @@ type Fixtures = {
   newUserPayload: CreateUserPayload | null; // allows passing a custom payload from the test
 
   authRequest: APIRequestContext; // Our new authorized fixture. It has name authRequest not just request, to not to change fixture 'request'
+  apiController: ApiController;
 };
 
 export const test = base.extend<Fixtures>({
@@ -32,6 +35,7 @@ export const test = base.extend<Fixtures>({
     { request, isAuthorized, isNeedToCreateUser, newUserPayload, existingUserEmail, existingUserPass },
     use,
   ) => {
+    const api = new ApiController(request);
     // CASE 1: Authentication is not required at all
     if (!isAuthorized) {
       await use(request); // Return the base unauthorized client
@@ -57,7 +61,7 @@ export const test = base.extend<Fixtures>({
         };
 
         // Create the user in the system using the base API client
-        await createUser(request, generatedPayload);
+        await api.userController.createUser(generatedPayload);
 
         // Save user credentials for the subsequent login step
         targetEmail = generatedPayload.user.email;
@@ -84,6 +88,13 @@ export const test = base.extend<Fixtures>({
         await contextToDispose.dispose();
       }
     }
+  },
+  // ! move apiController to the fixture to not create the class instance in each test
+  // ! pass authRequest as an attribute and create a dependency between fixtures
+  // ! it's enough to use only fixture apiController as a parameter in tests to have access to fixture authRequest
+  apiController: async ({ authRequest }, use) => {
+    const controller = new ApiController(authRequest);
+    await use(controller);
   },
 });
 
