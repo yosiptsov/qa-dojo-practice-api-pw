@@ -1,32 +1,27 @@
 import { APIRequestContext, test as base, request as APIRequest } from "@playwright/test";
 
 // it takes env variables from .env through ZOD validation envValidation.ts
-import { envConduit } from "../../../envValidation";
+import { envConduit } from "../../../../envValidation";
 
-// set a type for fixture
 type Fixtures = {
-  nonAuthRequest: APIRequestContext;
+  isAuthorized: boolean;
   userEmail: string;
   userPass: string;
 };
 
 export const test = base.extend<Fixtures>({
   // set default values for fixture
+  isAuthorized: true,
   userEmail: envConduit.CONDUIT_DEFAULT_EMAIL,
   userPass: envConduit.CONDUIT_DEFAULT_PASS,
 
-  // This is returns not authorized fixture 'request'. This is an alternative option not to use isAuthorized option.
-  // You just can use this fixture test('Test description', async ({ nonAuthRequest })
-  // instead of test('Test description', async ({ request })
-  nonAuthRequest: async ({}, use) => {
-    const req = await APIRequest.newContext();
-    await use(req);
+  request: async ({ request, isAuthorized, userEmail, userPass }, use) => {
+    // check if isAuthorized is False, then return not changed fixture 'request'
+    if (!isAuthorized) {
+      await use(request);
+      return; // add 'return', to stop the code execution
+    }
 
-    // ? AI recommended doing this. There is no such code in the lecture
-    await req.dispose();
-  },
-
-  request: async ({ request, userEmail, userPass }, use) => {
     // else, if isAuthorized = False, do authorization and return changed fixture 'request' with auth
     const token = await getToken(request, userEmail, userPass);
 
@@ -39,10 +34,6 @@ export const test = base.extend<Fixtures>({
 
     // return new request context
     await use(req);
-    // put steps that you want to be done after the test
-
-    // ? AI recommended doing this. There is no such code in the lecture
-    await req.dispose();
   },
 });
 

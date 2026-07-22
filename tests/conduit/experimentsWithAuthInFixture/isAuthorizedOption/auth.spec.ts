@@ -2,7 +2,7 @@ import { test } from "./fixture";
 import { expect } from "@playwright/test";
 
 // env types validation using ZOD
-import { envConduit } from "../../../envValidation";
+import { envConduit } from "../../../../envValidation";
 
 test.describe("Not Authorized requests example", () => {
   test.use({

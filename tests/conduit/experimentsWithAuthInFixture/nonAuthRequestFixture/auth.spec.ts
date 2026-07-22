@@ -1,9 +1,9 @@
 import { test } from "./fixture";
 import { expect } from "@playwright/test";
-import { TAG } from "../../../app/conduit/tags/tags";
+import { TAG } from "../../../../app/conduit/tags/tags";
 
 // env types validation using ZOD
-import { envConduit } from "../../../envValidation";
+import { envConduit } from "../../../../envValidation";
 
 test.describe("Not Authorized requests example", { tag: [TAG.auth, TAG.nonAuthRequests] }, () => {
   test("Using not authorized fixture nonAuthRequest |id: L15:t1|", async ({ nonAuthRequest }) => {
