@@ -37,7 +37,7 @@ export const test = base.extend<Fixtures>({
     // CASE 1: Authentication is not required at all
     if (!isAuthorized) {
       await use(request); // Return the base unauthorized client
-      return;
+      return; 
     }
 
     let targetEmail = existingUserEmail;
